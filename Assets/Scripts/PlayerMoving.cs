@@ -1,26 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class PlayerMoving : MonoBehaviour
 {
     private Transform _cameraTransform;
-    // rotating fields
+
     private float rotationX = 0.0f;
     private float rotationY = 0.0f;
-    private float speedRotating = 7.0f;
-    // moving fields
-    private float speedMoving = 8.5f;
+    private Rigidbody _rigidBody;
+
+    [SerializeField]  private float speedRotating;
+    [SerializeField]  private float _speedMoving;
+    [SerializeField] private Recoil RecoilObject;
 
     void Start()
     {
-        Rigidbody rigidBody = GetComponent<Rigidbody>();
-        _cameraTransform = GameObject.FindGameObjectWithTag("Direction").transform;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-        if (rigidBody != null)
-        {
-            rigidBody.freezeRotation = true;
-        }
+        _rigidBody = GetComponent<Rigidbody>();
+        _cameraTransform = GameObject.FindGameObjectWithTag("Direction").transform;
     }
 
     void Update()
@@ -33,8 +34,13 @@ public class PlayerMoving : MonoBehaviour
         transform.localEulerAngles = new Vector3(0, rotationY, 0);
         _cameraTransform.localEulerAngles = new Vector3(rotationX, 0, 0);
         // moving
-        float moveX = Input.GetAxis("Horizontal") * speedMoving;
-        float moveZ = Input.GetAxis("Vertical") * speedMoving;
+        float moveX = Input.GetAxis("Horizontal") * _speedMoving;
+        float moveZ = Input.GetAxis("Vertical") * _speedMoving;
         transform.Translate(moveX * Time.deltaTime, 0, moveZ * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            RecoilObject.recoil += 0.1f;
+        }
     }
 }

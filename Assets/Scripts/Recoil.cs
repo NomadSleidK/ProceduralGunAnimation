@@ -5,27 +5,28 @@ using UnityEngine;
 public class Recoil : MonoBehaviour
 {
     //public GameObject Weapon;
-    public float maxRecoil_x = -20.0f;
-    public float maxRecoil_y = -10.0f;
+    public float maxAngleRecoil_x;
+    public float maxAngleRecoil_y;
 
-    public float maxTrans_x = 1.0f;
-    public float maxTrans_z = -1.0f;
+    public float maxTrans_x;
+    public float maxTrans_z;
 
-    public float recoilSpeed = 10.0f;
-    public float recoil = 0.0f;
+    public float recoilSpeed;
+    public float recoil;
 
     void Update()
     {
         if (recoil > 0)
         {
             var maxRecoil = Quaternion.Euler(
-                Random.Range(transform.localRotation.x, maxRecoil_x),
-                Random.Range(transform.localRotation.y, maxRecoil_y),
+                Random.Range(transform.localRotation.x, Random.Range(-maxAngleRecoil_x, maxAngleRecoil_x)),
+                Random.Range(transform.localRotation.y, Random.Range(-maxAngleRecoil_y, maxAngleRecoil_y)),
                 transform.localRotation.z);
 
             // Dampen towards the target rotation
             transform.localRotation = Quaternion.Slerp(transform.localRotation, maxRecoil, Time.deltaTime * recoilSpeed);
 
+            
             var maxTranslation = new Vector3(
                 Random.Range(transform.localPosition.x, maxTrans_x),
                 transform.localPosition.y,
@@ -34,6 +35,7 @@ public class Recoil : MonoBehaviour
             transform.localPosition = Vector3.Slerp(transform.localPosition, maxTranslation, Time.deltaTime * recoilSpeed);
 
             recoil -= Time.deltaTime;
+            
         }
         else
         {
