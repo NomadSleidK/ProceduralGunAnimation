@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class PlayerMoving : MonoBehaviour
 {
-    private Transform _cameraTransform;
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+    public float projectileForce = 100f;
+
+    private Transform _directionTransform;
 
     private float rotationX = 0.0f;
     private float rotationY = 0.0f;
@@ -21,26 +25,49 @@ public class PlayerMoving : MonoBehaviour
         Cursor.visible = false;
 
         _rigidBody = GetComponent<Rigidbody>();
-        _cameraTransform = GameObject.FindGameObjectWithTag("Direction").transform;
+
+        if(_rigidBody != null)
+            _rigidBody.freezeRotation = true;
+
+        _directionTransform = GameObject.FindGameObjectWithTag("Direction").transform;
     }
 
-    void Update()
+    private void Update()
     {
-        // rotating
-        rotationX -= Input.GetAxis("Mouse Y") * speedRotating;
-        rotationX = Mathf.Clamp(rotationX, -45, 45);
+        Shooting();
+    }
+
+    void FixedUpdate()
+    {
+        Move();
+    }
+
+    private void Move()
+    {
         float delta = Input.GetAxis("Mouse X") * speedRotating;
-        rotationY = transform.localEulerAngles.y + delta;
-        transform.localEulerAngles = new Vector3(0, rotationY, 0);
-        _cameraTransform.localEulerAngles = new Vector3(rotationX, 0, 0);
-        // moving
         float moveX = Input.GetAxis("Horizontal") * _speedMoving;
         float moveZ = Input.GetAxis("Vertical") * _speedMoving;
-        transform.Translate(moveX * Time.deltaTime, 0, moveZ * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        rotationX -= Input.GetAxis("Mouse Y") * speedRotating;
+        rotationX = Mathf.Clamp(rotationX, -45, 45);
+        rotationY = transform.localEulerAngles.y + delta;
+
+        transform.localEulerAngles = new Vector3(0, rotationY, 0);
+        _directionTransform.localEulerAngles = new Vector3(rotationX, 0, 0);
+        
+        transform.Translate(moveX, 0, moveZ);
+    }
+
+    private void Shooting()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
             RecoilObject.recoil += 0.1f;
+
+            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+            projectile.transform.rotation = Quaternion.LookRotation(transform.forward);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            rb.AddForce(firePoint.forward * projectileForce, ForceMode.Impulse);
         }
     }
 }

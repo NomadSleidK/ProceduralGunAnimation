@@ -8,8 +8,6 @@ public class GunSway : MonoBehaviour
     [SerializeField] private float smooth;
     [SerializeField] private float swayMultiplier;
 
-
-
     private void Update()
     {
         float mouseX = Input.GetAxisRaw("Mouse X") * swayMultiplier;
@@ -19,7 +17,7 @@ public class GunSway : MonoBehaviour
         Quaternion rotationY = Quaternion.AngleAxis(mouseX, Vector3.up);
         Quaternion targetRotation = rotationX * rotationY;
 
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, smooth* Time.deltaTime);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, smooth * Time.deltaTime);
     }
     
 }
