@@ -15,6 +15,7 @@ public class PlayerMoving : MonoBehaviour
     [SerializeField]  private float _speedMoving;
 
     [SerializeField] private WeaponManager _weaponManager;
+    [SerializeField] private HandsPointManger _handPointManger;
 
     private Weapon _activeWeapon;
     public Weapon ActiveWeapon
@@ -27,6 +28,9 @@ public class PlayerMoving : MonoBehaviour
             _activeWeapon = value;
             _activeWeapon.transform.SetParent(GameObject.FindGameObjectWithTag("Direction").transform);
             _activeWeapon.transform.localPosition = Vector3.zero;
+
+            _handPointManger.TargetLeftHandPoint = _activeWeapon.LeftHandPoint;
+            _handPointManger.TargetRightHandPoint = _activeWeapon.RightHandPoint;
         }
     }
 

@@ -8,11 +8,15 @@ public class Weapon: MonoBehaviour
     [SerializeField] private float projectileForce;
 
     private Recoil _weaponRecoil; 
-
     [SerializeField] private Transform _firePoint;
 
-    [SerializeField] private Transform _leftHandPoint;
-    [SerializeField] private Transform _rightHandPoint;
+
+    [SerializeField] private GameObject _leftHandPoint;
+    public GameObject LeftHandPoint => _leftHandPoint;
+
+    [SerializeField] private GameObject _rightHandPoint;
+    public GameObject RightHandPoint => _rightHandPoint;
+
 
     private void Start()
     {
@@ -23,6 +27,7 @@ public class Weapon: MonoBehaviour
     {
         _weaponRecoil.PowerOfRecoil += value;
     }
+
     public void Shooting()
     {
         if (Input.GetMouseButtonDown(0))
@@ -35,6 +40,4 @@ public class Weapon: MonoBehaviour
             rb.AddForce(_firePoint.forward * projectileForce, ForceMode.Impulse);
         }
     }
-
-
 }
